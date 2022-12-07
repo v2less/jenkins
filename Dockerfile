@@ -7,18 +7,14 @@ ENV JENKINS_UC https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates
 ENV JENKINS_UC_DOWNLOAD https://mirrors.tuna.tsinghua.edu.cn/jenkins
 
 ENV JENKINS_OPTS="-Dhudson.model.UpdateCenter.updateCenterUrl=https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json"
-ENV JENKINS_OPTS="-Djenkins.install.runSetupWizard=false"
-ENV JAVA_OPTS="-Djava.awt.headless=true -Duser.timezone=Asia/Shanghai -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8"
+ENV JAVA_OPTS="-Djava.awt.headless=true -Duser.timezone=Asia/Shanghai -Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8 -Djenkins.install.runSetupWizard=false"
 
 COPY executors.groovy /usr/share/jenkins/ref/init.groovy.d/executors.groovy
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
 
-COPY entrypoint.sh /entrypoint.sh
-COPY .gitconfig /root/.gitconfig
-
 # 安装 Jenkins 插件
 COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN jenkins-plugin-cli -f /usr/share/jenkins/ref/plugins.txt
+RUN jenkins-plugin-cli --verbose -f /usr/share/jenkins/ref/plugins.txt
 
 # 设置 Jenkins 默认用户名和密码
 ENV JENKINS_USER admin
@@ -59,6 +55,10 @@ RUN sed -ie 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/g' /etc/locale.gen
 RUN locale-gen
 ENV LANG zh_CN.UTF-8
 ENV LANGUAGE zh_CN.UTF-8
-ENV LC_AL
+ENV LC_ALL en_US.UTF-8
+COPY entrypoint.sh /entrypoint.sh
+COPY .gitconfig /root/.gitconfig
+COPY jenkins.yaml /var/jenkins.yaml
+ENV CASC_JENKINS_CONFIG=/var/jenkins.yaml
 USER jenkins
 CMD /bin/bash /entrypoint.sh

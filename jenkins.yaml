@@ -1,0 +1,69 @@
+jenkins:
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  authorizationStrategy:
+    roleBased:
+      roles:
+        global:
+        - assignments:
+          - "anonymous"
+          name: "Anonymous"
+          pattern: ".*"
+          permissions:
+          - "Overall/Read"
+        - assignments:
+          - "admin"
+          name: "admin"
+          pattern: ".*"
+          permissions:
+          - "Overall/Administer"
+        - assignments:
+          - "user"
+          name: "user"
+          pattern: ".*"
+          permissions:
+          - "Overall/Read"
+          - "Job/Build"
+          - "Agent/Build"
+          - "Job/Workspace"
+          - "Run/Replay"
+  markupFormatter: "plainText"
+  mode: NORMAL
+  securityRealm:
+    local:
+      allowsSignup: false
+      enableCaptcha: false
+      users:
+      - id: "admin"
+        password: ${adminpw:-passw0rd}
+        name: "admin"
+        properties:
+        - mailer:
+            emailAddress: "admin@email.com"
+      - id: "user"
+        password: ${userpw:-passw0rd}
+        name: "user"
+        properties:
+        - mailer:
+            emailAddress: "user@email.com"
+  myViewsTabBar: "standard"
+  numExecutors: 0
+  primaryView:
+    all:
+      name: "all"
+  updateCenter:
+    sites:
+    - id: "default"
+      url: "https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json"
+  views:
+  - all:
+      name: "all"
+  viewsTabBar: "standard"
+unclassified:
+  locale:
+    ignoreAcceptLanguage: true
+    systemLocale: "zh_CN"
+  location:
+    adminAddress: "${EMAIL_NOTIFICATIONS}"
+    url: "${JENKINS_URL}"

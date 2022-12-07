@@ -5,10 +5,16 @@ services:
       context: .
       dockerfile: Dockerfile
     image: myjenkins
+    container_name: myjenkins
     ports:
       - 8080:8080
-      - 50000:50000
+      - 55000:50000
     volumes:
       - ./jenkins_home:/var/jenkins_home
+      - ./jenkins.yaml:/var/jenkins.yaml
       - /var/run/docker.sock:/var/run/docker.sock
-
+    environment:
+      - JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+      - JENKINS_URL="127.0.0.1"
+      - EMAIL_NOTIFICATIONS="waytoarcher@gmail.com"
+      - adminpw=admin

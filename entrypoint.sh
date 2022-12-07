@@ -1,13 +1,14 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 #aws s3 sync s3://kong-aws-ecs-jenkins/.ssh /root/.ssh
 
 if [ -f /root/.ssh/id_rsa ]; then
   chmod 500 /root/.ssh/id_rsa
 fi
+sudo chown -R jenkins:jenkins /var/jenkins_home
 git config --global user.name "waytoarcher"
 git config --global user.email waytoarcher@gmail.com
-ssh-keyscan -H github.com > /etc/ssh/ssh_known_hosts
+ssh-keyscan -H github.com | sudo tee /etc/ssh/ssh_known_hosts
 /usr/bin/tini -- /usr/local/bin/jenkins.sh
